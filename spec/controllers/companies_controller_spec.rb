@@ -30,14 +30,13 @@ RSpec.describe CompaniesController, type: :controller do
       end
     end
 
-    context 'when un authorized user accessed' do
+    context 'when unauthorized user accessed' do
       before do
         request.headers['Authorization'] = 'wrong_api_key'
       end
 
-      it 'will respond unauthorized status with' do
-        is_expected.to have_http_status(:unauthorized)
-        expect(response.body).to eq('')
+      it 'will respond success status' do
+        is_expected.to have_http_status(:success)
       end
     end
   end

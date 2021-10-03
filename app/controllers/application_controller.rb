@@ -1,9 +1,4 @@
 class ApplicationController < ActionController::API
-  include ActionController::RequestForgeryProtection
-  include ActionController::HttpAuthentication::Token::ControllerMethods
-
-  protect_from_forgery with: :null_session
-
   respond_to :json
 
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -15,10 +10,10 @@ class ApplicationController < ActionController::API
 
   def authenticate_user
     token = request.headers['Authorization']
-    return unless token.present?
-
-    # TODO: Find out why it's failing
-    # authenticate_or_request_with_http_token do |token|
+    unless token.present?
+      head :unauthorized
+      return
+    end
 
     jwt_payload = JWT.decode(token, Rails.application.secrets.secret_key_base).first
     @current_user_id = jwt_payload['id']
