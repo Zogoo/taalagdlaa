@@ -21,15 +21,15 @@ import axios from 'axios';
 export default {
   data: function () {
     return {
-      total: 0,
+      total_result: 0,
       companies: []
     }
   },
   mounted () {
     axios.get('/api/company/all')
-        .then(function(response){
-          this.total = response.data['total'];
-          this.companies = response.data['companies'];
+        .then((response) => {
+          this.total_result = response.data.total;
+          this.companies = response.data.companies;
         })
   }
 }
