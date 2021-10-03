@@ -1,9 +1,10 @@
 class ApplicationController < ActionController::API
+  include ActionController::RequestForgeryProtection
+
   protect_from_forgery with: :null_session
 
   respond_to :json
 
-  before_action :underscore_params!
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_user
 
@@ -12,14 +13,14 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate_user
-    if request.headers['Authorization'].present?
-      authenticate_or_request_with_http_token do |token|
-        jwt_payload = JWT.decode(token, Rails.application.secrets.secret_key_base).first
+    return unless request.headers['Authorization'].present?
 
-        @current_user_id = jwt_payload['id']
-      rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
-        head :unauthorized
-      end
+    authenticate_or_request_with_http_token do |token|
+      jwt_payload = JWT.decode(token, Rails.application.secrets.secret_key_base).first
+
+      @current_user_id = jwt_payload['id']
+    rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
+      head :unauthorized
     end
   end
 

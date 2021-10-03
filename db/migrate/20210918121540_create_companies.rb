@@ -5,7 +5,7 @@ class CreateCompanies < ActiveRecord::Migration[6.1]
       t.integer :rating
       t.string :description
       t.string :owner_name
-      t.date :established_at
+      t.date   :established_at
 
       t.timestamps
     end
