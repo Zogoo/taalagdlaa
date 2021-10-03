@@ -25,12 +25,31 @@ gem 'devise'
 # OAuth2+OpenID Identity Provider
 gem 'doorkeeper'
 gem 'doorkeeper-openid_connect'
+# JWT token
+gem 'jwt'
+
+# Facebook login
+gem 'omniauth'
+gem 'omniauth-facebook'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 
 # Webpacker
 gem 'webpacker'
+
+# Environment variable management gem
+gem 'dotenv-rails'
+
+# Image uploader
+gem 'carrierwave'
+gem 'fog-core'
+gem 'fog-aws'
+gem 'fog-xml'
+gem 'fog-json'
+
+# Views
+gem 'jbuilder'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
@@ -40,12 +59,12 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'factory_bot_rails', '~> 4.0'
   gem 'shoulda-matchers', '~> 3.1'
+  gem 'rspec-rails', '~> 3.5'
   gem 'faker'
   gem 'database_cleaner'
 end
 
 group :development do
-  gem 'rspec-rails', '~> 3.5'
   gem 'listen', '~> 3.3'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'

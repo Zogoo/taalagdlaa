@@ -5,5 +5,11 @@ Rails.application.routes.draw do
     devise_for :users, controllers: { sessions: :sessions },
                        path_names: { sign_in: :login }
     resource :user, only: %i[show update]
+
+    resource :company do
+      collection do
+        get 'all' => :index
+      end
+    end
   end
 end

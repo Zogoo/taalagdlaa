@@ -17,9 +17,12 @@ ActiveRecord::Schema.define(version: 2021_09_18_121540) do
 
   create_table "companies", force: :cascade do |t|
     t.string "name"
+    t.string "logo"
     t.integer "rating"
     t.string "description"
     t.string "owner_name"
+    t.string "phone_number"
+    t.string "industry"
     t.date "established_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -28,6 +31,7 @@ ActiveRecord::Schema.define(version: 2021_09_18_121540) do
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
+    t.integer "status", default: 0, null: false
     t.string "phone_number"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
