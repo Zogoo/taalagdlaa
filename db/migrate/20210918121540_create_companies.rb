@@ -5,7 +5,7 @@ class CreateCompanies < ActiveRecord::Migration[6.1]
       t.string :name, default: nil
       t.string :label, default: ''
       t.string :logo
-      t.integer :rating, default: 0
+      t.integer :ratings, default: 0
       t.integer :price_range, default: 0
       t.string :phone_number
       t.string :web_url, default: ''

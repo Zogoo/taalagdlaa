@@ -42,7 +42,7 @@ end
 10.times do
   Company.create(
     name: Faker::Company.unique.name,
-    rating: rand(10),
+    ratings: rand(10),
     price_range: rand(10_000..100_000),
     description: Faker::Lorem.sentence,
     owner_name: Faker::Name.first_name,

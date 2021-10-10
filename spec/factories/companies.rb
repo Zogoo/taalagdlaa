@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :company do
     name { Faker::Company.name.downcase }
     label { Faker::Company.name }
-    rating { rand(10) }
+    ratings { rand(10) }
     description { Faker::Company.industry }
     owner_name { Faker::Name.name }
     established_at { Faker::Date.between(from: 10.years.ago, to: Date.today) }

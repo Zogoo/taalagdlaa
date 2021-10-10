@@ -29,7 +29,7 @@ class CompaniesController < ApplicationController
   def company_params
     params.permit(
       :name,
-      :rating,
+      :ratings,
       :description,
       :owner_name,
       :established_at
