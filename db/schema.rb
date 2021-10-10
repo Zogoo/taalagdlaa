@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 2021_10_10_101813) do
   create_table "companies", force: :cascade do |t|
     t.bigint "category_id"
     t.string "name"
+    t.string "label", default: ""
     t.string "logo"
     t.integer "rating"
     t.integer "price_range"

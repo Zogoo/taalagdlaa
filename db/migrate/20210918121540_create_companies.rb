@@ -3,6 +3,7 @@ class CreateCompanies < ActiveRecord::Migration[6.1]
     create_table :companies do |t|
       t.references :category, null: true
       t.string :name, default: nil
+      t.string :label, default: ''
       t.string :logo
       t.integer :rating
       t.integer :price_range
@@ -13,7 +14,7 @@ class CreateCompanies < ActiveRecord::Migration[6.1]
       t.string :owner_name
       t.json :industry
       t.date :established_at
-      t.jsonb :tags, default: []
+      t.jsonb :tags, default: {}
 
       t.timestamps
     end

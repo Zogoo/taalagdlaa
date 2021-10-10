@@ -10,4 +10,17 @@ class Company < ApplicationRecord
   mount_uploader :logo, ImageUploader
   has_many :reviews
   belongs_to :category, optional: true
+  before_create :convert_name
+
+  scope :by_tags, lambda { |tags|
+    where('tags @> ?', tags.to_json)
+  }
+
+  scope :by_name, lambda { |name|
+    where('name LIKE :name', name: "%#{Regexp.escape(name.to_s.downcase.strip)}%")
+  }
+
+  def convert_name
+    self.name = name.to_s.downcase
+  end
 end

@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :company do
-    name { Faker::Company.name }
+    name { Faker::Company.name.downcase }
+    label { Faker::Company.name }
     rating { rand(10) }
     description { Faker::Company.industry }
     owner_name { Faker::Name.name }
