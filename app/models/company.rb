@@ -8,4 +8,5 @@
 # t.date :established_at
 class Company < ApplicationRecord
   mount_uploader :logo, ImageUploader
+  has_many :reviews
 end
