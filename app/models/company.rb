@@ -9,4 +9,5 @@
 class Company < ApplicationRecord
   mount_uploader :logo, ImageUploader
   has_many :reviews
+  belongs_to :category, optional: true
 end

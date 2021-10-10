@@ -8,15 +8,53 @@
 fixture_path = Rails.root.join('spec/fixtures/company_logos/starbucks-coffee-logo-vector-200x200.png')
 logo = Rack::Test::UploadedFile.new(fixture_path, 'image/jpg')
 
+categories = [
+  'beauty salon',
+  'car repair',
+  'car wash',
+  'bowling',
+  'golf',
+  'school',
+  'photography',
+  'hostpital',
+  'clinic',
+  'hotel',
+  'motel',
+  'car parking',
+  'fitness',
+  'restaurant',
+  'museum',
+  'bank',
+  'theatre',
+  'retailer',
+  'amusement park',
+  'food manufactor',
+  'cloth manufactor',
+  'people',
+  'service',
+  'building'
+].map do |name|
+  Category.create(name: name)
+end
+
 10.times do
   Company.create(
-    name: Faker::Name.first_name,
+    name: Faker::Company.unique.name,
     rating: rand(10),
     description: Faker::Lorem.sentence,
     owner_name: Faker::Name.first_name,
     established_at: Faker::Date.between(from: 3.years.ago, to: Date.today),
     phone_number: Faker::PhoneNumber.phone_number_with_country_code,
     industry: Faker::Company.industry,
-    logo: logo
+    logo: logo,
+    category: categories.sample
   )
+end
+
+100.times do
+  User.new(
+    email: Faker::Internet.unique.email,
+    phone_number: Faker::PhoneNumber.unique.phone_number,
+    password: SecureRandom.hex(6)
+  ).save
 end

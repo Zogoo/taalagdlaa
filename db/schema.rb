@@ -10,22 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_10_073704) do
+ActiveRecord::Schema.define(version: 2021_10_10_101813) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "companies", force: :cascade do |t|
+    t.bigint "category_id"
     t.string "name"
     t.string "logo"
     t.integer "rating"
-    t.string "description"
-    t.string "owner_name"
+    t.integer "price_range"
     t.string "phone_number"
-    t.string "industry"
+    t.string "web_url"
+    t.string "description"
+    t.json "open_hours"
+    t.string "owner_name"
+    t.json "industry"
     t.date "established_at"
+    t.jsonb "tags", default: []
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["category_id"], name: "index_companies_on_category_id"
+    t.index ["name"], name: "index_companies_on_name", unique: true
   end
 
   create_table "photos", force: :cascade do |t|
