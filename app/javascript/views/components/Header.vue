@@ -13,7 +13,7 @@ export default {
 };
 </script>
 <style scoped>
-/* .header {
+.header {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
@@ -21,6 +21,6 @@ export default {
 }
 
 .header-title {
-  font-weight: $bold700;
-} */
+  font-weight: 700;
+}
 </style>

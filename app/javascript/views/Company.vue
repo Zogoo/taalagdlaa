@@ -31,7 +31,7 @@
       <div class="row">
         <div
           class="col-md-6 pad-15-ver"
-          v-for="company in companies"
+          v-for="company in filtered_companies"
           :key="company.id"
         >
           <div
@@ -39,11 +39,14 @@
             @mouseover="show_hover(true, company.id)"
             @mouseout="show_hover(false, 0)"
           >
-            <img class="card-img" :src="company.logo" />
+            <img class="card-img" :src="company.logo.url"/>
             <div
               class="card-bottom pad-15-hor"
               v-show="!hover_flag || active_id != company.id"
             >
+              <div class="max-width-160">
+                <span class="bold">{{ company.name }}</span>
+              </div>
               <div class="min-width-160">
                 <span class="bold">Ratings:</span>
                 <star-rating
@@ -61,6 +64,7 @@
               :class="{ 'card-hover': 1 }"
               v-show="hover_flag && active_id == company.id"
             >
+              <h3>{{company.name}}</h3>
               <span
                 @click="make_active(company.id)"
                 :class="{
@@ -185,7 +189,7 @@ export default {
 <style scoped>
 /* Styles are scoped to this component only.*/
 /* Style for Desktop/Tablet  */
-/* .search-parent {
+.search-parent {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
@@ -197,7 +201,35 @@ export default {
   box-shadow: 2px 2px 8px grey;
 }
 .card-img {
-  width: 100%;
+  max-width: 100%;
+  height: 100;
+  width: 100;
+}
+.search-bar {
+  position: relative;
+}
+.search-bar input {
+  padding-left: 30px;
+}
+.search-icon {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
+.absolute-star {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.card-hover p {
+  font-size: 10px;
+  text-align: center;
+}
+.bold {
+  font-weight: 500;
+}
+.rating-div {
+  width: 200px;
 }
 .card-bottom {
   position: absolute;
@@ -223,34 +255,8 @@ export default {
   justify-content: center;
   align-items: center;
 }
-.absolute-star {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-.card-hover p {
-  font-size: 10px;
-  text-align: center;
-}
-.bold {
-  font-weight: 500;
-}
-.rating-div {
-  width: 200px;
-}
-.search-bar {
-  position: relative;
-}
-.search-bar input {
-  padding-left: 30px;
-}
-.search-icon {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-} */
 /* For Mobile Device, we will be going with column wrap approach */
-/* @media screen and (max-width: 550px) {
+@media screen and (max-width: 550px) {
   .search-parent {
     display: flex;
     flex-flow: column wrap;
@@ -262,5 +268,5 @@ export default {
     width: 100%;
     text-align: center;
   }
-} */
+}
 </style>
