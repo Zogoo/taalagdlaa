@@ -26,16 +26,17 @@ ActiveRecord::Schema.define(version: 2021_10_10_101813) do
     t.string "name"
     t.string "label", default: ""
     t.string "logo"
-    t.integer "rating"
-    t.integer "price_range"
+    t.integer "rating", default: 0
+    t.integer "price_range", default: 0
     t.string "phone_number"
-    t.string "web_url"
-    t.string "description"
+    t.string "web_url", default: ""
+    t.string "description", default: ""
+    t.string "address", default: ""
     t.json "open_hours"
     t.string "owner_name"
     t.json "industry"
     t.date "established_at"
-    t.jsonb "tags", default: []
+    t.jsonb "tags", default: {}
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["category_id"], name: "index_companies_on_category_id"

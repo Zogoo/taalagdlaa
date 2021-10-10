@@ -5,6 +5,8 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+include FactoryBot::Syntax::Methods
+
 fixture_path = Rails.root.join('spec/fixtures/company_logos/starbucks-coffee-logo-vector-200x200.png')
 logo = Rack::Test::UploadedFile.new(fixture_path, 'image/jpg')
 
@@ -41,13 +43,16 @@ end
   Company.create(
     name: Faker::Company.unique.name,
     rating: rand(10),
+    price_range: rand(10_000..100_000),
     description: Faker::Lorem.sentence,
     owner_name: Faker::Name.first_name,
     established_at: Faker::Date.between(from: 3.years.ago, to: Date.today),
     phone_number: Faker::PhoneNumber.phone_number_with_country_code,
     industry: Faker::Company.industry,
     logo: logo,
-    category: categories.sample
+    category: categories.sample,
+    address: Faker::Address.full_address,
+    web_url: Faker::Internet.url
   )
 end
 

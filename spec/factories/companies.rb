@@ -6,8 +6,11 @@ FactoryBot.define do
     description { Faker::Company.industry }
     owner_name { Faker::Name.name }
     established_at { Faker::Date.between(from: 10.years.ago, to: Date.today) }
+    address { Faker::Address.full_address }
     phone_number { Faker::PhoneNumber.phone_number_with_country_code }
     industry { Faker::Company.industry }
+    web_url { Faker::Internet.url }
+    price_range { rand(10_000..100_000) }
 
     trait(:with_logo) do
       logo do
