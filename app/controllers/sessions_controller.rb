@@ -1,7 +1,8 @@
 class SessionsController < Devise::SessionsController
+  skip_before_action :authenticate_user
+
   def create
     user = User.find_by_email(sign_in_params[:email])
-
     if user&.valid_password?(sign_in_params[:password])
       @current_user = user
     else
