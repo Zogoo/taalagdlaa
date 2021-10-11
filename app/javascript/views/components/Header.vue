@@ -5,11 +5,21 @@
     <div>
       <i class="fas fa-bars"></i>
     </div>
+    <b-button variant="outline-primary" @click="redreictToLogin">Login</b-button>
+    <b-button variant="outline-primary" @click="redirectToSignUp">Register</b-button>
   </div>
 </template>
 <script>
 export default {
   name: "Header",
+  methods: {
+    redirectToSignUp(){
+      this.$router.push('/sign_up');
+    },
+    redreictToLogin(){
+      this.$router.push('/login');
+    }
+  }
 };
 </script>
 <style scoped>

@@ -1,5 +1,5 @@
 class CompaniesController < ApplicationController
-  before_action :authenticate_user!, expect: %i[index show]
+  before_action :authenticate_user!, only: %i[create update destroy]
 
   def index
     @companies = Company.all
