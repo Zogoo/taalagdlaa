@@ -1,7 +1,9 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
 
-  def show; end
+  def show
+    @user = User.where(email: params[:email]).or(User.where(id: params[:id]))
+  end
 
   def update
     if current_user.update_attributes(user_params)

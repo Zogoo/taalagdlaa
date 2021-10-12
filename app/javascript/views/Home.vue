@@ -38,6 +38,7 @@
             class="card-inner"
             @mouseover="show_hover(true, company.id)"
             @mouseout="show_hover(false, 0)"
+            @click="showCompanyDetail(company.id)"
           >
             <img class="card-img" :src="company.logo.url"/>
             <div
@@ -129,6 +130,9 @@ export default {
       });
   },
   methods: {
+    showCompanyDetail(company_id) {
+      this.$router.push({name: 'company', params: { id: company_id }});
+    },
     show_hover(flag, active_id) {
       this.hover_flag = flag;
       this.active_id = active_id;

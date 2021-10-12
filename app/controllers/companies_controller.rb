@@ -6,7 +6,7 @@ class CompaniesController < ApplicationController
   end
 
   def show
-    @company = Company.where(email: params[:email]).or(Company.where(id: params[:id]))
+    @company = Company.where(name: params[:name]).or(Company.where(id: params[:id])).first
   end
 
   def create

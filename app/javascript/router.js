@@ -20,6 +20,13 @@ export default new VueRouter({
       path: "/login",
       component: () => import("./views/Login"),
       meta: { authRequired: false },
+    },
+    {
+      path: "/company/:id",
+      name:"company",
+      props: true,
+      component: () => import("./views/Company"),
+      meta: { authRequired: false },
     }
   ],
 });
