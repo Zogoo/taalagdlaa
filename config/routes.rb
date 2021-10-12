@@ -11,5 +11,12 @@ Rails.application.routes.draw do
         get 'all' => :index
       end
     end
+
+    resource :review do
+      collection do
+        post :vote
+        post :spam
+      end
+    end
   end
 end
