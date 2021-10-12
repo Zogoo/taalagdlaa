@@ -1,5 +1,5 @@
 class SessionsController < Devise::SessionsController
-  skip_before_action :authenticate_user
+  before_action :authenticate_user!, only: %i[destroy]
 
   def create
     user = User.find_by_email(sign_in_params[:email])

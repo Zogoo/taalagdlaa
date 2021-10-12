@@ -16,7 +16,19 @@
         <b-form-input id="password" type="password" v-model="user.password" />
       </b-col>
     </b-row>
-    <b-button variant="outline-primary" @click="register_user">Login</b-button>
+    <b-row class="my-1">
+      <b-col sm="3">
+        <label for="phone_number">Phone number:</label>
+      </b-col>
+      <b-col sm="9">
+        <b-form-input
+          id="phone_number"
+          type="text"
+          v-model="user.phone_number"
+        />
+      </b-col>
+    </b-row>
+    <b-button variant="outline-primary" @click="register_user">Register</b-button>
   </b-container>
 </template>
 
@@ -24,19 +36,20 @@
 import axios from "axios";
 
 export default {
-  name: "Login",
+  name: "Registration",
   data: function () {
     return {
       user: {
         email: "",
         password: "",
+        phone_number: "",
       },
     };
   },
   methods: {
     async register_user() {
       axios
-        .post("/api/users/login", { user: this.user })
+        .post("/api/users", { user: this.user })
         .then((response) => {
           if (response.statusText == "OK") {
             this.$auth.setCurrentUser(response.data.user);

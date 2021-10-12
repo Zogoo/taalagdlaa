@@ -12,8 +12,13 @@ export default new VueRouter({
       meta: { authRequired: false },
     },
     {
-      path: "/sign_up",
-      component: () => import("./views/Signup"),
+      path: "/registration",
+      component: () => import("./views/Registration"),
+      meta: { authRequired: false },
+    },
+    {
+      path: "/login",
+      component: () => import("./views/Login"),
       meta: { authRequired: false },
     }
   ],
