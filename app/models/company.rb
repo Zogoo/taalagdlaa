@@ -12,6 +12,8 @@ class Company < ApplicationRecord
   belongs_to :category, optional: true
   before_create :convert_name
 
+  enum status: %i[active hidden suspended deleted]
+
   scope :by_tags, lambda { |tags|
     where('tags @> ?', tags.to_json)
   }

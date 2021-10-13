@@ -2,11 +2,19 @@ class CompaniesController < ApplicationController
   before_action :authenticate_user!, only: %i[create update destroy]
 
   def index
-    @companies = Company.all
+    @companies = Company.active
   end
 
   def show
-    @company = Company.where(name: params[:name]).or(Company.where(id: params[:id])).first
+    @company = Company.where(
+      name: params[:name],
+      status: :active
+    ).or(
+      Company.where(
+        id: params[:id],
+        status: :active
+      )
+    ).first
   end
 
   def create

@@ -3,6 +3,8 @@ class CreateCompanies < ActiveRecord::Migration[6.1]
     create_table :companies do |t|
       t.references :category, null: true
       t.string :name, default: nil
+      t.integer :status, default: 0, null: false
+
       t.string :label, default: ''
       t.string :logo
       t.integer :ratings, default: 0
