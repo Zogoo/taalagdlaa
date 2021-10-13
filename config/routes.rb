@@ -12,8 +12,9 @@ Rails.application.routes.draw do
       end
     end
 
-    resource :review do
+    resource :reviews do
       collection do
+        get 'all' => :index
         post :vote
         post :spam
       end

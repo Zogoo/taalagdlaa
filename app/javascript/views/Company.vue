@@ -1,10 +1,7 @@
 <template>
   <div class="container-fluid">
     <img class="card-img" :src="company.logo.url"/>
-    <div
-      class="card-bottom pad-15-hor"
-      v-show="!hover_flag || active_id != company.id"
-    >
+    <div class="card-bottom pad-15-hor">
       <div class="max-width-160">
         <span class="bold">{{ company.name }}</span>
       </div>
@@ -21,19 +18,18 @@
         <span class="bold">{{ company.address }}</span>
       </div>
     </div>
+    <comment :company-id="company.id"/>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import StarRating from 'vue-star-rating';
+import Comment from './components/Comment';
 export default {
-  props: {
-    id: {
-      type: Number
-    }
-  },
+  props: ['id'],
   components: {
+    Comment,
     StarRating
   },
   data: function(){
@@ -47,7 +43,6 @@ export default {
         id: this.id
       }
     }).then((response) => {
-      debugger;
       this.company = response.data;
     }).catch((error) => {
       console.log(error.response);

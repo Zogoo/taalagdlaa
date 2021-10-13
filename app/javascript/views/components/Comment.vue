@@ -85,7 +85,7 @@
       <div class="comment-form comment-v" v-if="commentBoxs[index]">
         <!-- Comment Avatar -->
         <div class="comment-avatar">
-          <img src="storage/comment.png">
+          <img :src="avatarUrl()">
         </div>
 
         <form class="form" name="form">
@@ -168,12 +168,11 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
+import _ from 'lodash';
 
 export default {
-  props: [
-    "company_id",
-  ],
+  props: ["companyId"],
   data() {
     return {
       comments: [],
@@ -193,20 +192,27 @@ export default {
     };
   },
   mounted() {
-    console.log("mounted");
+    console.log("mounted", " company id:",this.companyId,);
     this.fetchComments();
   },
   methods: {
     avatarUrl() {
-      return this.commentData.user.avatar_icon != "" ? this.commentData.user.avatar_icon : "/public/assets/avatar_empty_man.png";
+      return !!this.commentData && !!this.commentData.user && this.commentData.user.avatar_icon != ""
+        ? this.commentData.user.avatar_icon
+        : "/public/assets/avatar_empty_man.png";
     },
     fetchComments() {
-      axios.get("/api/reviews")
-            .then((res) => {
-              this.commentData = res.data;
-              this.commentsData = _.orderBy(res.data, ["votes"], ["desc"]);
-              this.comments = 1;
-            });
+      axios
+        .get("/api/reviews/all", {
+          params: {
+            company_id: this.companyId,
+          },
+        })
+        .then((res) => {
+          this.commentData = res.data;
+          this.commentsData = _.orderBy(res.data, ["votes"], ["desc"]);
+          this.comments = 1;
+        });
     },
     showComments(index) {
       if (!this.viewcomment[index]) {
@@ -240,7 +246,7 @@ export default {
         this.errorComment = null;
         axios
           .post("/api/reviews", {
-            company_id: this.company_id,
+            company_id: this.companyId,
             users_id: this.user.id,
             comment: this.message,
           })
@@ -302,9 +308,10 @@ export default {
     voteComment(commentId, commentType, index, index2, voteType) {
       if (this.user) {
         axios
-          .post("/api/reviews/vote/" + commentId, {
+          .post("/api/reviews/vote", {
+            id: commentId,
             vote_type: voteType,
-            company_id: this.company_id,
+            company_id: this.companyId,
             users_id: this.user.id,
           })
           .then((res) => {
@@ -330,8 +337,9 @@ export default {
       console.log("spam here");
       if (this.user) {
         axios
-          .post("/api/reviews/spam" + commentId, {
-            company_id: this.company_id,
+          .post("/api/reviews/spam", {
+            id: commentId,
+            company_id: this.companyId,
             users_id: this.user.id,
           })
           .then((res) => {
