@@ -7,8 +7,8 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 include FactoryBot::Syntax::Methods
 
-fixture_path = Rails.root.join('spec/fixtures/company_logos/starbucks-coffee-logo-vector-200x200.png')
-logo = Rack::Test::UploadedFile.new(fixture_path, 'image/jpg')
+company_logo_path = Rails.root.join('spec/fixtures/company_logos/starbucks-coffee-logo-vector-200x200.png')
+logo = Rack::Test::UploadedFile.new(company_logo_path, 'image/jpg')
 
 categories = [
   'beauty salon',
@@ -56,10 +56,14 @@ end
   )
 end
 
+avatar_path = Rails.root.join('spec/fixtures/avatar_icons/profile_pic.jpeg')
+avatar_icon = Rack::Test::UploadedFile.new(avatar_path, 'image/jpeg')
+
 100.times do
   User.new(
     email: Faker::Internet.unique.email,
     phone_number: Faker::PhoneNumber.unique.phone_number,
-    password: SecureRandom.hex(6)
+    password: '!QAZ2wsx',
+    avatar_icon: avatar_icon
   ).save
 end

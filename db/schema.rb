@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 2021_10_10_101813) do
   create_table "companies", force: :cascade do |t|
     t.bigint "category_id"
     t.string "name"
+    t.integer "status", default: 0, null: false
     t.string "label", default: ""
     t.string "logo"
     t.integer "ratings", default: 0
@@ -54,8 +55,16 @@ ActiveRecord::Schema.define(version: 2021_10_10_101813) do
   create_table "reviews", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "company_id"
-    t.string "comment"
-    t.integer "rate"
+    t.integer "status", default: 0
+    t.string "comment", default: ""
+    t.integer "ratings", default: 0, null: false
+    t.integer "votes", default: 0, null: false
+    t.integer "spam", default: 0, null: false
+    t.integer "service_rating", default: 0, null: false
+    t.integer "access_rating", default: 0, null: false
+    t.integer "comfort_rating", default: 0, null: false
+    t.jsonb "specific_ratings", default: {}
+    t.jsonb "tag", default: {}
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["company_id"], name: "index_reviews_on_company_id"
@@ -82,6 +91,7 @@ ActiveRecord::Schema.define(version: 2021_10_10_101813) do
     t.integer "failed_attempts", default: 0, null: false
     t.string "unlock_token"
     t.datetime "locked_at"
+    t.string "avatar_icon"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true

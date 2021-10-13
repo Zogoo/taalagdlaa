@@ -6,7 +6,7 @@
   <div class="comment-form" v-if="user">
     <!-- Comment Avatar -->
     <div class="comment-avatar">
-      <img src="storage/commentbox.png">
+      <img :src="avatarUrl()">
     </div>
     <form class="form" name="form">
       <div class="form-row">
@@ -27,7 +27,7 @@
 
     <!-- Comment Avatar -->
     <div class="comment-avatar">
-      <img src="storage/commentbox.png">
+      <img :src="avatarUrl()">
     </div>
 
     <form class="form" name="form">
@@ -44,15 +44,13 @@
   <div class="comments" v-if="comments" v-for="(comment,index) in commentsData">
     <!-- Comment -->
     <div v-if="!spamComments[index] || !comment.spam" class="comment">
+
       <!-- Comment Avatar -->
       <div class="comment-avatar">
-        <img src="storage/comment.png">
+        <img :src="avatarUrl()">
       </div>
 
-
-
       <!-- Comment Box -->
-
       <div class="comment-box">
         <div class="comment-text">{{comment.comment}}</div>
         <div class="comment-footer">
@@ -60,19 +58,19 @@
             <span class="comment-author">
               <em>{{ comment.name}}</em>
             </span>
-            <span class="comment-date">{{ comment.date}}</span>
+            <span class="comment-date">{{ comment.created_at}}</span>
           </div>
           <div class="comment-actions">
             <ul class="list">
               <li>Votes: {{comment.votes}}
                 <a v-if="!comment.votedByUser"
-                  v-on:click="voteComment(comment.commentid,'directcomment',index,0,'up')">Up Votes</a>
+                  v-on:click="voteComment(comment.id,'directcomment',index,0,'up')">Up Votes</a>
                 <a v-if="!comment.votedByUser"
-                  v-on:click="voteComment(comment.commentid,'directcomment',index,0,'down')">Down Votes</a>
+                  v-on:click="voteComment(comment.id,'directcomment',index,0,'down')">Down Votes</a>
               </li>
 
               <li>
-                <a v-on:click="spamComment(comment.commentId,'directcomment',index,0)">Spam</a>
+                <a v-on:click="spamComment(comment.id,'directcomment',index,0)">Spam</a>
               </li>
 
               <li>
@@ -84,7 +82,6 @@
       </div>
 
       <!-- From -->
-
       <div class="comment-form comment-v" v-if="commentBoxs[index]">
         <!-- Comment Avatar -->
         <div class="comment-avatar">
@@ -100,7 +97,7 @@
             <input class="input" placeholder="Email" type="text" :value="user.name">
           </div>
           <div class="form-row">
-            <input type="button" class="btn btn-success" v-on:click="replyComment(comment.commentid,index)" value="Add Comment">
+            <input type="button" class="btn btn-success" v-on:click="replyComment(comment.id,index)" value="Add Comment">
           </div>
         </form>
       </div>
@@ -127,12 +124,12 @@
                 <div class="comment-actions">
                   <ul class="list">
                     <li>Total votes: {{replies.votes}}
-                      <a v-if="!replies.votedByUser" v-on:click="voteComment(replies.commentid,'replycomment',index,index2,'up')">Up Votes</a>
-                      <a v-if="!replies.votedByUser" v-on:click="voteComment(comment.commentid,'replycomment',index,index2,'down')">Down Votes</a>
+                      <a v-if="!replies.votedByUser" v-on:click="voteComment(replies.id,'replycomment',index,index2,'up')">Up Votes</a>
+                      <a v-if="!replies.votedByUser" v-on:click="voteComment(comment.id,'replycomment',index,index2,'down')">Down Votes</a>
                       </a>
                     </li>
                     <li>
-                      <a v-on:click="spamComment(replies.commentid,'replycomment',index,index2)">Spam</a>
+                      <a v-on:click="spamComment(replies.id,'replycomment',index,index2)">Spam</a>
                     </li>
                     <li>
                       <a v-on:click="replyCommentBox(index2)">Reply</a>
@@ -143,7 +140,6 @@
             </div>
 
             <!-- From -->
-
             <div class="comment-form reply" v-if="replyCommentBoxs[index2]">
               <!-- Comment Avatar -->
               <div class="comment-avatar">
@@ -159,7 +155,7 @@
                   <input class="input" placeholder="Email" type="text" :value="user.name">
                 </div>
                 <div class="form-row">
-                  <input type="button" class="btn btn-success" v-on:click="replyComment(comment.commentid,index)" value="Add Comment">
+                  <input type="button" class="btn btn-success" v-on:click="replyComment(comment.id,index)" value="Add Comment">
                 </div>
               </form>
             </div>
@@ -175,7 +171,9 @@
 import axios from 'axios';
 
 export default {
-  props: ["commentUrl"],
+  props: [
+    "company_id",
+  ],
   data() {
     return {
       comments: [],
@@ -191,16 +189,24 @@ export default {
       spamComments: [],
       errorComment: null,
       errorReply: null,
-      user: window.user,
+      user: this.$auth.getCurrentUser(),
     };
   },
+  mounted() {
+    console.log("mounted");
+    this.fetchComments();
+  },
   methods: {
+    avatarUrl() {
+      return this.commentData.user.avatar_icon != "" ? this.commentData.user.avatar_icon : "/public/assets/avatar_empty_man.png";
+    },
     fetchComments() {
-      axios.get("/api/reviews" + this.commentUrl).then((res) => {
-        this.commentData = res.data;
-        this.commentsData = _.orderBy(res.data, ["votes"], ["desc"]);
-        this.comments = 1;
-      });
+      axios.get("/api/reviews")
+            .then((res) => {
+              this.commentData = res.data;
+              this.commentsData = _.orderBy(res.data, ["votes"], ["desc"]);
+              this.comments = 1;
+            });
     },
     showComments(index) {
       if (!this.viewcomment[index]) {
@@ -234,14 +240,14 @@ export default {
         this.errorComment = null;
         axios
           .post("/api/reviews", {
-            page_id: this.commentUrl,
-            comment: this.message,
+            company_id: this.company_id,
             users_id: this.user.id,
+            comment: this.message,
           })
           .then((res) => {
             if (res.data.status) {
               this.commentsData.push({
-                commentid: res.data.commentId,
+                commentid: res.data.id,
                 name: this.user.name,
                 comment: this.message,
                 votes: 0,
@@ -268,7 +274,7 @@ export default {
             if (res.data.status) {
               if (!this.commentsData[index].reply) {
                 this.commentsData[index].replies.push({
-                  commentid: res.data.commentId,
+                  commentid: res.data.id,
                   name: this.user.name,
                   comment: this.message,
                   votes: 0,
@@ -278,7 +284,7 @@ export default {
                 Vue.set(this.commentBoxs, index, 0);
               } else {
                 this.commentsData[index].replies.push({
-                  commentid: res.data.commentId,
+                  commentid: res.data.id,
                   name: this.user.name,
                   comment: this.message,
                   votes: 0,
@@ -296,9 +302,10 @@ export default {
     voteComment(commentId, commentType, index, index2, voteType) {
       if (this.user) {
         axios
-          .post("/api/reviews/vote" + commentId, {
+          .post("/api/reviews/vote/" + commentId, {
+            vote_type: voteType,
+            company_id: this.company_id,
             users_id: this.user.id,
-            vote: voteType,
           })
           .then((res) => {
             if (res.data) {
@@ -324,6 +331,7 @@ export default {
       if (this.user) {
         axios
           .post("/api/reviews/spam" + commentId, {
+            company_id: this.company_id,
             users_id: this.user.id,
           })
           .then((res) => {
@@ -336,10 +344,6 @@ export default {
           });
       }
     },
-  },
-  mounted() {
-    console.log("mounted");
-    this.fetchComments();
   },
 };
 </script>

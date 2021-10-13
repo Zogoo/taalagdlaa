@@ -7,10 +7,10 @@ class CreateReviews < ActiveRecord::Migration[6.1]
 
       # Main fields
       t.string :comment, default: ''
-      t.integer :rate, default: 0, null: false
+      t.integer :ratings, default: 0, null: false
 
       # Customers feedback for comment
-      t.integer :vote, default: 0, null: false
+      t.integer :votes, default: 0, null: false
       t.integer :spam, default: 0, null: false
 
       # Rating

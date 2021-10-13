@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :reviews
   # table column
   enum status: %i[active suspended hidden deleted]
+  mount_uploader :avatar_icon, ImageUploader
 
   def generate_jwt
     JWT.encode({ id: id, exp: 60.days.from_now.to_i }, Rails.application.secrets.secret_key_base)

@@ -5,12 +5,21 @@ class Review < ApplicationRecord
 
   enum status: %i[active hidden suspended deleted]
 
-  def increase_vote
-    self.vote = vote + 1
+  def vote_up
+    self.votes = votes + 1
   end
 
-  def increase_vote!
-    increase_vote
+  def vote_up!
+    vote_up
+    save
+  end
+
+  def vote_down
+    self.votes = votes - 1
+  end
+
+  def vote_down!
+    vote_down
     save
   end
 

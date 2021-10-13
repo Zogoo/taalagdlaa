@@ -19,7 +19,7 @@ class ReviewsController < ApplicationController
     @review = review_company.reviews.find(params[:id])
 
     respond_to do |format|
-      if @review.increase_vote
+      if params[:type] == 'up' ? @review.vote_up! : @review.vote_down!
         format.json { render json: { notice: 'Review was successfully voted.' }, status: :sucess }
       else
         format.json { render json: { notice: 'Could not vote this review' }, status: :unprocessable_entity }
