@@ -24,7 +24,7 @@ export default {
     },
     currentUserName(){
       const user = this.$auth.getCurrentUser();
-      return user.email;
+      return user == null ? 'Guest' : user.email;
     },
     redirectToSignUp(){
       this.$router.push('/registration');

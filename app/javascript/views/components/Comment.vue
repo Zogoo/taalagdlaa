@@ -6,7 +6,7 @@
   <div class="comment-form" v-if="user">
     <!-- Comment Avatar -->
     <div class="comment-avatar">
-      <img :src="avatarUrl()">
+      <img :src="user.avatar_icon.url">
     </div>
     <form class="form" name="form">
       <div class="form-row">
@@ -27,7 +27,7 @@
 
     <!-- Comment Avatar -->
     <div class="comment-avatar">
-      <img :src="avatarUrl()">
+      <img :src="user.avatar_icon.url">
     </div>
 
     <form class="form" name="form">
@@ -43,11 +43,12 @@
 
   <div class="comments" v-if="comments" v-for="(comment,index) in commentsData">
     <!-- Comment -->
-    <div v-if="!spamComments[index] || !comment.spam" class="comment">
+    <!-- v-if="!spamComments[index] || comment.spam < 200" -->
+    <div class="comment">
 
       <!-- Comment Avatar -->
       <div class="comment-avatar">
-        <img :src="avatarUrl()">
+        <img :src="avatarUrl(index)">
       </div>
 
       <!-- Comment Box -->
@@ -85,7 +86,7 @@
       <div class="comment-form comment-v" v-if="commentBoxs[index]">
         <!-- Comment Avatar -->
         <div class="comment-avatar">
-          <img :src="avatarUrl()">
+          <img :src="avatarUrl(index)">
         </div>
 
         <form class="form" name="form">
@@ -196,9 +197,9 @@ export default {
     this.fetchComments();
   },
   methods: {
-    avatarUrl() {
-      return !!this.commentData && !!this.commentData.user && this.commentData.user.avatar_icon != ""
-        ? this.commentData.user.avatar_icon
+    avatarUrl(index) {
+      return !!this.commentsData && !!this.commentsData[index].user && this.commentsData[index].user.avatar_icon.url != ""
+        ? this.commentsData[index].user.avatar_icon.url
         : "/public/assets/avatar_empty_man.png";
     },
     fetchComments() {
@@ -209,35 +210,35 @@ export default {
           },
         })
         .then((res) => {
-          this.commentData = res.data;
-          this.commentsData = _.orderBy(res.data, ["votes"], ["desc"]);
+          // Figure it out why it's returning array
+          this.commentsData = _.orderBy(res.data, ["votes"], ["desc"])[0];
           this.comments = 1;
         });
     },
     showComments(index) {
       if (!this.viewcomment[index]) {
-        Vue.set(this.show, index, "hide");
-        Vue.set(this.viewcomment, index, 1);
+        this.$set(this.show, index, "hide");
+        this.$set(this.viewcomment, index, 1);
       } else {
-        Vue.set(this.show, index, "view");
-        Vue.set(this.viewcomment, index, 0);
+        this.$set(this.show, index, "view");
+        this.$set(this.viewcomment, index, 0);
       }
     },
     openComment(index) {
       if (this.user) {
         if (this.commentBoxs[index]) {
-          Vue.set(this.commentBoxs, index, 0);
+          this.$set(this.commentBoxs, index, 0);
         } else {
-          Vue.set(this.commentBoxs, index, 1);
+          this.$set(this.commentBoxs, index, 1);
         }
       }
     },
     replyCommentBox(index) {
       if (this.user) {
         if (this.replyCommentBoxs[index]) {
-          Vue.set(this.replyCommentBoxs, index, 0);
+          this.$set(this.replyCommentBoxs, index, 0);
         } else {
-          Vue.set(this.replyCommentBoxs, index, 1);
+          this.$set(this.replyCommentBoxs, index, 1);
         }
       }
     },
@@ -247,7 +248,7 @@ export default {
         axios
           .post("/api/reviews", {
             company_id: this.companyId,
-            users_id: this.user.id,
+            user_id: this.user.id,
             comment: this.message,
           })
           .then((res) => {
@@ -272,8 +273,9 @@ export default {
         this.errorReply = null;
         axios
           .post("/api/reviews", {
+            company_id: this.companyId,
+            user_id: this.user.id,
             comment: this.message,
-            users_id: this.user.id,
             reply_id: commentId,
           })
           .then((res) => {
@@ -286,8 +288,8 @@ export default {
                   votes: 0,
                 });
                 this.commentsData[index].reply = 1;
-                Vue.set(this.replyCommentBoxs, index, 0);
-                Vue.set(this.commentBoxs, index, 0);
+                this.$set(this.replyCommentBoxs, index, 0);
+                this.$set(this.commentBoxs, index, 0);
               } else {
                 this.commentsData[index].replies.push({
                   commentid: res.data.id,
@@ -295,8 +297,8 @@ export default {
                   comment: this.message,
                   votes: 0,
                 });
-                Vue.set(this.replyCommentBoxs, index, 0);
-                Vue.set(this.commentBoxs, index, 0);
+                this.$set(this.replyCommentBoxs, index, 0);
+                this.$set(this.commentBoxs, index, 0);
               }
               this.message = null;
             }
@@ -312,7 +314,7 @@ export default {
             id: commentId,
             vote_type: voteType,
             company_id: this.companyId,
-            users_id: this.user.id,
+            user_id: this.user.id,
           })
           .then((res) => {
             if (res.data) {
@@ -340,14 +342,14 @@ export default {
           .post("/api/reviews/spam", {
             id: commentId,
             company_id: this.companyId,
-            users_id: this.user.id,
+            user_id: this.user.id,
           })
           .then((res) => {
             if (commentType == "directcomment") {
-              Vue.set(this.spamComments, index, 1);
-              Vue.set(this.viewcomment, index, 1);
+              this.$set(this.spamComments, index, 1);
+              this.$set(this.viewcomment, index, 1);
             } else if (commentType == "replycomment") {
-              Vue.set(this.spamCommentsReply, index2, 1);
+              this.$set(this.spamCommentsReply, index2, 1);
             }
           });
       }

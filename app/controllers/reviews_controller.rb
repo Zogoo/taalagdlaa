@@ -12,30 +12,26 @@ class ReviewsController < ApplicationController
   end
 
   def create
-    @review = Review.create(review_params.merge!(company: review_company, user: review_owner))
+    @review = Review.create(review_params.merge!(company: review_company, user: review_owner).merge!(mentioned))
   end
 
   def vote
     @review = review_company.reviews.find(params[:id])
 
-    respond_to do |format|
-      if params[:type] == 'up' ? @review.vote_up! : @review.vote_down!
-        format.json { render json: { notice: 'Review was successfully voted.' }, status: :sucess }
-      else
-        format.json { render json: { notice: 'Could not vote this review' }, status: :unprocessable_entity }
-      end
+    if params[:type] == 'up' ? @review.vote_up! : @review.vote_down!
+      render json: { notice: 'Review was successfully voted.' }, status: :accepted
+    else
+      render json: { notice: 'Could not vote this review' }, status: :unprocessable_entity
     end
   end
 
   def spam
     @review = review_company.reviews.find(params[:id])
 
-    respond_to do |format|
-      if @review.mark_as_spam!
-        format.json { render json: { notice: 'Review was successfully reported.' }, status: :sucess }
-      else
-        format.json { render json: { notice: 'Could not reported this review' }, status: :unprocessable_entity }
-      end
+    if @review.mark_as_spam!
+      render json: { notice: 'Review was successfully reported.' }, status: :accepted
+    else
+      render json: { notice: 'Could not reported this review' }, status: :unprocessable_entity
     end
   end
 
@@ -65,5 +61,9 @@ class ReviewsController < ApplicationController
 
   def review_company
     @review_company ||= Company.find(company_params[:company_id])
+  end
+
+  def mentioned
+    params[:reply_id].present? ? { mention: { comment: params[:reply_id] } } : {}
   end
 end

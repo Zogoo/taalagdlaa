@@ -28,7 +28,7 @@ Vue.prototype.$auth = {
     if (user != null && user != "null") {
       return JSON.parse(user);
     } else {
-      return { email: 'Guest' };
+      return null;
     }
   },
   setAccessToken(token) {
