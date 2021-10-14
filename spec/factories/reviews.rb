@@ -22,5 +22,12 @@ FactoryBot.define do
         create(:photo, review: review)
       end
     end
+
+    trait(:with_required_data) do
+      before(:create) do
+        company { create(:company, :with_logo, :with_category) }
+        user { create(:user, :with_avatar) }
+      end
+    end
   end
 end

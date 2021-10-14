@@ -11,10 +11,16 @@ include FactoryBot::Syntax::Methods
 categories = create_list(:category, 20)
 
 # Companies
-companies = create_list(:company, 25, :with_logo, category: categories.sample)
+companies = 25.times.map do
+  create(:company, :with_logo, category: categories.sample)
+end
 
 # Users
-users = create_list(:user, 25, :with_avatar)
+users = 50.times.map do
+  create(:user, :with_avatar)
+end
 
 # Review and comments
-create_list(:review, 50, :with_pothos, company: companies.sample, user: users.sample)
+100.times.map do
+  create(:review, :with_pothos, company: companies.sample, user: users.sample)
+end

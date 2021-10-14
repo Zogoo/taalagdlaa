@@ -21,5 +21,12 @@ FactoryBot.define do
         Rack::Test::UploadedFile.new(fixture_path, 'image/jpg')
       end
     end
+
+    trait(:with_category) do
+      after(:create) do |company|
+        category = create(:category)
+        company.update!(category: category)
+      end
+    end
   end
 end
