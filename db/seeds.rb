@@ -7,63 +7,14 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 include FactoryBot::Syntax::Methods
 
-company_logo_path = Rails.root.join('spec/fixtures/company_logos/starbucks-coffee-logo-vector-200x200.png')
-logo = Rack::Test::UploadedFile.new(company_logo_path, 'image/jpg')
+# Company categories
+categories = create_list(:category, 20)
 
-categories = [
-  'beauty salon',
-  'car repair',
-  'car wash',
-  'bowling',
-  'golf',
-  'school',
-  'photography',
-  'hostpital',
-  'clinic',
-  'hotel',
-  'motel',
-  'car parking',
-  'fitness',
-  'restaurant',
-  'museum',
-  'bank',
-  'theatre',
-  'retailer',
-  'amusement park',
-  'food manufactor',
-  'cloth manufactor',
-  'people',
-  'service',
-  'building'
-].map do |name|
-  Category.create(name: name)
-end
+# Companies
+companies = create_list(:company, 25, :with_logo, category: categories.sample)
 
-10.times do
-  Company.create(
-    name: Faker::Company.unique.name,
-    ratings: rand(10),
-    price_range: rand(10_000..100_000),
-    description: Faker::Lorem.sentence,
-    owner_name: Faker::Name.first_name,
-    established_at: Faker::Date.between(from: 3.years.ago, to: Date.today),
-    phone_number: Faker::PhoneNumber.phone_number_with_country_code,
-    industry: Faker::Company.industry,
-    logo: logo,
-    category: categories.sample,
-    address: Faker::Address.full_address,
-    web_url: Faker::Internet.url
-  )
-end
+# Users
+users = create_list(:user, 25, :with_avatar)
 
-avatar_path = Rails.root.join('spec/fixtures/avatar_icons/profile_pic.jpeg')
-avatar_icon = Rack::Test::UploadedFile.new(avatar_path, 'image/jpeg')
-
-100.times do
-  User.new(
-    email: Faker::Internet.unique.email,
-    phone_number: Faker::PhoneNumber.unique.phone_number,
-    password: '!QAZ2wsx',
-    avatar_icon: avatar_icon
-  ).save
-end
+# Review and comments
+create_list(:review, 50, :with_pothos, company: companies.sample, user: users.sample)

@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(version: 2021_10_10_101813) do
     t.integer "access_rating", default: 0, null: false
     t.integer "comfort_rating", default: 0, null: false
     t.jsonb "specific_ratings", default: {}
-    t.jsonb "tag", default: {}
+    t.jsonb "mention", default: {}
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["company_id"], name: "index_reviews_on_company_id"

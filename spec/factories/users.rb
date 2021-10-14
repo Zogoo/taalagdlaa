@@ -2,14 +2,15 @@ FactoryBot.define do
   factory :user do
     email { Faker::Internet.email }
     phone_number { Faker::PhoneNumber.cell_phone }
-    password { 'Password!123' }
+    password { '!QAZ2wsx' }
     last_sign_in_at { Time.now }
     confirmed_at { Time.now }
 
     trait(:with_avatar) do
       avatar_icon do
-        fixture_path = Rails.root.join('spec/fixtures/avatar_icons/profile_pic.jpeg')
-        Rack::Test::UploadedFile.new(fixture_path, 'image/jpeg')
+        avatars = %w[avatar_empty_man.png avatar_empty_woman.png profile_pic.jpeg]
+        path = Rails.root.join("spec/fixtures/avatar_icons/#{avatars.sample}")
+        Rack::Test::UploadedFile.new(path, 'image/jpeg')
       end
     end
   end

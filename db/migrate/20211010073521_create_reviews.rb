@@ -20,7 +20,7 @@ class CreateReviews < ActiveRecord::Migration[6.1]
       t.jsonb :specific_ratings, default: {}
 
       # Mention
-      t.jsonb :tag, default: {}
+      t.jsonb :mention, default: {}
 
       t.timestamps
     end

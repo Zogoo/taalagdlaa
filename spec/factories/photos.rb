@@ -3,7 +3,8 @@ FactoryBot.define do
     association :review, strategy: :build
 
     image do
-      fixture_path = Rails.root.join('spec/fixtures/review_photos/review.jpg')
+      photo = %w[book.png	game.jpeg	glass.jpg	iphone.jpeg	people.jpeg	review.jpeg]
+      fixture_path = Rails.root.join("spec/fixtures/review_photos/#{photo.sample}")
       Rack::Test::UploadedFile.new(fixture_path, 'image/jpg')
     end
   end

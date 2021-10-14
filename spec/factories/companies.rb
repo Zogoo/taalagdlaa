@@ -14,7 +14,10 @@ FactoryBot.define do
 
     trait(:with_logo) do
       logo do
-        fixture_path = Rails.root.join('spec/fixtures/company_logos/starbucks-coffee-logo-vector-200x200.png')
+        logo_name = %w[adidas-logo-vector-01.png bmw-logo-200x200.png gucci-logo-vector.jpeg nike-logo-vector-01.png starbucks-coffee-logo-vector-200x200.png
+                       american-express-logo-200x200.png facebook-logo-vector-ai-200x200.png mercedes-benz-logo-vector-01.png pepsi-logo-vector-01-200x200.png
+                       apple-logo-vector-01-200x200.png google-logo-vector-200x200.png new-microsoft-logo-2012-logo-vector-01-200x200.png polo-ralph-lauren-logo-vector-200x200.png]
+        fixture_path = Rails.root.join("spec/fixtures/company_logos/#{logo_name.sample}")
         Rack::Test::UploadedFile.new(fixture_path, 'image/jpg')
       end
     end
