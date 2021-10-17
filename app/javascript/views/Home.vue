@@ -39,6 +39,11 @@
                 <!-- put some svg icon viewBox="0 0 24 24" width="1em"  -->
                 </button>
               </div>
+              <b-form-select
+                @input="sort()"
+                v-model="search.filter"
+                :options="options"
+              />
             </div>
           </div>
         </div>
@@ -49,13 +54,6 @@
         {{ likes.count }}
         <span class="bold">Hits:</span>
         {{ likes.hit }}
-      </div>
-      <div>
-        <b-form-select
-          @input="sort()"
-          v-model="search.filter"
-          :options="options"
-        />
       </div>
     </div>
     <div class="container-fluid">
@@ -253,12 +251,15 @@ export default {
 .filter-container {
   margin-left: 10px;
   display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  max-width: 100%;
 }
 .filter-button {
   display: flex;
   flex: 1 1 0;
-  min-width: 0;
   margin-left: 10px;
+  margin-bottom: 20px;
 }
 .hollow-button {
   color: rgb(53, 147, 255);
