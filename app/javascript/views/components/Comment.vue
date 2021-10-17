@@ -41,7 +41,7 @@
 
   <!-- Comments List -->
 
-  <div class="comments" v-if="comments" v-for="(comment,index) in commentsData">
+  <div class="comments" v-if="comments" v-for="(comment,index) in commentsData" :key="comment.id">
     <!-- Comment -->
     <!-- v-if="!spamComments[index] || comment.spam < 200" -->
     <div class="comment">

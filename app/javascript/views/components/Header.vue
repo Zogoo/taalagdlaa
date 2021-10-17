@@ -18,6 +18,8 @@ export default {
     return {
     }
   },
+  mounted(){
+  },
   methods: {
     showLoginBar(){
       return this.currentUserName() == 'Guest';
@@ -54,14 +56,4 @@ export default {
 };
 </script>
 <style scoped>
-.header {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  padding: 15px 20px;
-}
-
-.header-title {
-  font-weight: 700;
-}
 </style>

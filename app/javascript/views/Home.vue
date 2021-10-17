@@ -2,17 +2,48 @@
   <div>
     <Header />
     <div class="pad-15-hor pad-15-ver search-parent">
-      <div class="search-bar">
-        <b-form-input
-          @input="search_text()"
-          v-model="search.text"
-          type="text"
-          placeholder="Search by Name"
-        ></b-form-input>
-        <span class="search-icon">
-          <i class="fas fa-search"></i>
-        </span>
+      <!-- Quick filters -->
+      <div class="quick-filters">
+        <div class="filter-line">
+          <div class="filter-content">
+            <div class="filter-container">
+              <div class="filter-button"
+                v-if="categories"
+                v-for="category in categories"
+                :key="category.id"
+              >
+                <a class="hollow-button" @click="filter_by_category(category.name)">
+                  <span class="hollow-btn-txt">
+                    <span class="label-txt">{{category.name}}</span>
+                  </span>
+                  <span viewBox="0 0 24 24" width="24px" height="24px" class="filter-btn-icon-container">
+                    <!-- put some svg icons -->
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      <!-- Search panel -->
+      <div class="search-panel">
+        <div class="search-panel-inner">
+          <picture class="search-bar-pic">
+            <img alt="" role="none" src="/public/assets/ub-cartoon.jpeg">
+          </picture>
+          <div class="search-bar-container">
+            <div class="search-bar-container-inner">
+              <div role="search" class="sb-form">
+                <input @input="search_by_text()" v-model="search.text" type="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required="" name="search-bar" class="sb-input" placeholder="Where to?" title="Search" role="searchbox" aria-label="Search" aria-controls="typeahead_results" aria-autocomplete="list" value="">
+                <button class="sb-search-btn" title="Search" aria-label="Search" tabindex="-1">
+                <!-- put some svg icon viewBox="0 0 24 24" width="1em"  -->
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div>
         <span class="bold">Total Likes:</span>
         {{ likes.count }}
@@ -40,7 +71,7 @@
             @mouseout="show_hover(false, 0)"
             @click="showCompanyDetail(company.id)"
           >
-            <img class="card-img" :src="company.logo.url"/>
+            <img class="card-img" :src="company.logo.url" />
             <div
               class="card-bottom pad-15-hor"
               v-show="!hover_flag || active_id != company.id"
@@ -65,7 +96,7 @@
               :class="{ 'card-hover': 1 }"
               v-show="hover_flag && active_id == company.id"
             >
-              <h3>{{company.name}}</h3>
+              <h3>{{ company.name }}</h3>
               <span
                 @click="make_active(company.id)"
                 :class="{
@@ -89,17 +120,18 @@
 <script>
 import axios from "axios";
 import Header from "./components/Header.vue";
-import StarRating from 'vue-star-rating'
+import StarRating from "vue-star-rating";
 
 export default {
   name: "Home",
   components: {
     Header,
-    StarRating
+    StarRating,
   },
   data: function () {
     return {
       total_result: 0,
+      categories: [],
       companies: [],
       filtered_companies: [],
       hover_flag: false,
@@ -114,24 +146,25 @@ export default {
     };
   },
   mounted() {
-    axios
-      .get("/api/company/all")
-      .then((response) => {
-        this.total_result = response.data.total;
-        this.companies = response.data.companies;
-        response.data.companies.map((company) => {
-          this.likes.count += company.ratings;
-        });
-        this.companies = this.companies.map((company) => {
-          company.active_like = false;
-          return company;
-        });
-        this.filtered_companies = response.data.companies;
+    axios.get('/api/category/all').then((response)=>{
+      this.categories = response.data.categories;
+    });
+    axios.get("/api/company/all").then((response) => {
+      this.total_result = response.data.total;
+      this.companies = response.data.companies;
+      response.data.companies.map((company) => {
+        this.likes.count += company.ratings;
       });
+      this.companies = this.companies.map((company) => {
+        company.active_like = false;
+        return company;
+      });
+      this.filtered_companies = response.data.companies;
+    });
   },
   methods: {
     showCompanyDetail(company_id) {
-      this.$router.push({name: 'company', params: { id: company_id }});
+      this.$router.push({ name: "company", params: { id: company_id } });
     },
     show_hover(flag, active_id) {
       this.hover_flag = flag;
@@ -147,7 +180,7 @@ export default {
             return b.ratings - a.ratings;
           });
     },
-    search_text() {
+    search_by_text() {
       //console.log(this.search.text);
       var inside = this;
       this.filtered_companies = this.companies.filter(function (company) {
@@ -155,6 +188,17 @@ export default {
           company.name
             .toLowerCase()
             .indexOf(inside.search.text.toLowerCase()) != "-1"
+        ) {
+          return company;
+        }
+      });
+    },
+    filter_by_category(name){
+      this.filtered_companies = this.companies.filter(function (company) {
+        if (
+          company.category.name
+            .toLowerCase()
+            .indexOf(name.toLowerCase()) != "-1"
         ) {
           return company;
         }
@@ -171,9 +215,7 @@ export default {
     },
     make_active(id) {
       this.likes.hit++;
-      this.companies = this.companies.map(function (
-        company
-      ) {
+      this.companies = this.companies.map(function (company) {
         if (company.id == id) {
           company.active_like = !company.active_like;
           company.active_like ? company.likes++ : company.likes--;
@@ -191,86 +233,177 @@ export default {
 </script>
 
 <style scoped>
-/* Styles are scoped to this component only.*/
-/* Style for Desktop/Tablet  */
-.search-parent {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  background-color: lightgray;
+.quick-filters {
+  padding-top: 32px;
+  padding-bottom: 24px;
 }
-.card-inner {
+.filter-line {
   position: relative;
-  overflow: hidden;
-  box-shadow: 2px 2px 8px grey;
+  background-color: #fff;
 }
-.card-img {
+.filter-content {
+  width:calc(1300 + 2*24px);
   max-width: 100%;
-  height: 100;
-  width: 100;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
 }
-.search-bar {
+.filter-container {
+  margin-left: 10px;
+  display: flex;
+}
+.filter-button {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  margin-left: 10px;
+}
+.hollow-button {
+  color: rgb(53, 147, 255);
+  background-color: white;
+  border: 1px solid;
+  min-width: 150px;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 12px;
+  padding: 11px 16px;
+  transition: background-color .2s,color .2s;
+  text-align: left;
+  border-radius: 12px;
+  align-items: flex-start;
   position: relative;
-}
-.search-bar input {
-  padding-left: 30px;
-}
-.search-icon {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-}
-.absolute-star {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-.card-hover p {
-  font-size: 10px;
-  text-align: center;
-}
-.bold {
-  font-weight: 500;
-}
-.rating-div {
-  width: 200px;
-}
-.card-bottom {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 30px;
+  cursor: pointer;
+  box-sizing: border-box;
+  text-decoration: none;
   width: 100%;
-  background-color: white;
-  opacity: 0.7;
-  display: flex;
+  flex-direction: row;
+  overflow: hidden;
   justify-content: space-between;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  height: 100%;
 }
-.card-hover {
+.hollow-button:hover {
+  color: rgb(52, 88, 250);
+  background-color: rgb(189, 229, 255);
+  border-color: rgb(42, 195, 255);
+}
+.hollow-btn-txt {
+  margin-top: 4px;
+  text-overflow: ellipsis;
+  overflow: hidden; 
+  text-align: left;
+  cursor: pointer;
+}
+.filter-btn-icon-container {
+  line-height: 0;
+  text-align: left;
+      cursor: pointer;
+}
+.filter-btn-icon {
+  fill: currentColor;
+  vertical-align: bottom;
+  display: inline-block;
+  color: #000;
+  line-height: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.label-txt {
+  font-family: "Trip Sans VF","Trip Sans",Arial,sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  font-style: normal;
+}
+/* Search panel */
+.search-panel {
+  width: calc(1300px + 2*24px);
+  max-width: 100%;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+.search-panel-inner {
+  height: 415px;
+  background-color: #fdc735;
+  position: relative;
+  display: grid;
+}
+.search-bar-pic {
   position: absolute;
-  right: 15px;
-  left: 15px;
-  top: 15px;
-  bottom: 15px;
-  background-color: white;
-  opacity: 0.7;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
+  top: 0;
+  left: 0;
 }
-/* For Mobile Device, we will be going with column wrap approach */
-@media screen and (max-width: 550px) {
-  .search-parent {
-    display: flex;
-    flex-flow: column wrap;
-    justify-content: center;
-    align-items: center;
-    background-color: lightgray;
-  }
-  .search-parent div {
-    width: 100%;
-    text-align: center;
-  }
+.search-bar-pic img {
+  width: 1300px;
+  height: 415px;
+}
+.search-bar-container {
+  width: 807px;
+  justify-self: center;
+  padding-left: 0;
+  padding-right: 0;
+  align-self: center;
+}
+.search-bar-container-inner {
+  height: 60px;
+  position: relative;
+  margin: 0 auto;
+  z-index: 0;
+  text-align: left;
+}
+.sb-form {
+  padding: 0 12px;
+  border-radius: 30px;
+  box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+  display: block;
+  position: relative;
+  background: #fff;
+  overflow: hidden;
+  text-align: left;
+}
+.sb-input {
+  font-size: 18px;
+  line-height: 36px;
+  padding-left: 42px;
+  height: 60px;
+  text-overflow: ellipsis;
+  outline: none;
+  box-shadow: none;
+  background: none;
+  width: 100%;
+  border-radius: 0;
+  color: #000;
+  border: none;
+  appearance: none;
+  box-sizing: border-box;
+}
+.sb-search-btn {
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+  background: none;
+  position: absolute;
+  display: flex;
+  line-height: 0;
+  color: #000;
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  appearance: none;
+  align-items: center;
+  top: 0;
+  justify-content: center;
+}
+/* Company */
+.card-img {
+  width: 200px;
+  height: 200px;
 }
 </style>

@@ -6,6 +6,12 @@ Rails.application.routes.draw do
                        path_names: { sign_in: :login }
     resource :user, only: %i[show update]
 
+    resource :category, only: %i[index] do
+      collection do
+        get 'all' => :index
+      end
+    end
+
     resource :company do
       collection do
         get 'all' => :index
